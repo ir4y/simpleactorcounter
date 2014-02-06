@@ -7,15 +7,14 @@
 %% API Function Exports
 %% ------------------------------------------------------------------
 
--export([start_link/0]).
+-export([start_link/0, inc/1, dec/1, set_counter/1, get_counter/0]).
 
 %% ------------------------------------------------------------------
 %% gen_server Function Exports
 %% ------------------------------------------------------------------
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
-         terminate/2, code_change/3,
-         inc/1, dec/1, set_counter/1, get_counter/0]).
+         terminate/2, code_change/3]).
 
 %% ------------------------------------------------------------------
 %% API Function Definitions
@@ -39,19 +38,20 @@ get_counter() ->
 %% ------------------------------------------------------------------
 %% gen_server Function Definitions
 %% ------------------------------------------------------------------
+-record(state,{amount}).
 
 init(Amount) ->
-    {ok, Amount}.
+    {ok, #state{amount=Amount}}.
 
-handle_call({get_counter}, _From, Amount) ->
-    {reply, Amount, Amount}.
+handle_call({get_counter}, _From, State) ->
+    {reply, State#state.amount, State}.
 
-handle_cast({inc, N}, Amount) ->
-    {noreply, Amount+N};
-handle_cast({dec, N}, Amount) ->
-    {noreply, Amount-N};
-handle_cast({set_counter, N}, _Amount) ->
-    {noreply, N}.
+handle_cast({inc, N}, State) ->
+    {noreply, State#state{amount=State#state.amount + N}};
+handle_cast({dec, N}, State) ->
+    {noreply, State#state{amount=State#state.amount - N}};
+handle_cast({set_counter, N}, State) ->
+    {noreply,State#state{amount=N}}.
 
 handle_info(_Info, State) ->
     {noreply, State}.
