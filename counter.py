@@ -11,3 +11,21 @@ class Counter(pykka.ThreadingActor):
             self.counter += message['amount']
         elif message['method'] == 'decrease':
             self.counter -= message['amount']
+        elif message['method'] == 'set_counter':
+            self.counter = message['amount']
+
+
+class Counter2(pykka.ThreadingActor):
+    counter = 0
+
+    def increase(self, amount):
+        self.counter += amount
+
+    def decrease(self, amount):
+        self.counter -= amount
+
+    def get_counter(self):
+        return self.counter
+
+    def set_counter(self, amount):
+        self.counter=amount
