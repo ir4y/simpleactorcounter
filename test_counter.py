@@ -24,23 +24,23 @@ def proxy(request):
 
 def test_simple_counter(counter_ref):
     counter_ref.tell({'method': 'set_counter',
-                      'amount': 0})
-    counter_ref.tell({'method': 'increase',
-                      'amount': 10})
-    counter_ref.tell({'method': 'increase',
-                      'amount': 5})
-    counter_ref.tell({'method': 'decrease',
-                      'amount': 7})
+                      'n': 0})
+    counter_ref.tell({'method': 'inc',
+                      'n': 10})
+    counter_ref.tell({'method': 'inc',
+                      'n': 5})
+    counter_ref.tell({'method': 'dec',
+                      'n': 7})
     value = counter_ref.ask({'method': 'get_counter'})
     assert value == 8
 
 
 def test_multiprocess(counter_ref):
     counter_ref.tell({'method': 'set_counter',
-                      'amount': 0})
+                      'n': 0})
     def increment():
-        counter_ref.tell({'method': 'increase',
-                          'amount': 10})
+        counter_ref.tell({'method': 'inc',
+                          'n': 10})
     threads = []
     for i in range(0,10):
         thread = Thread(target=increment)
@@ -55,9 +55,9 @@ def test_multiprocess(counter_ref):
 
 def test_simple_counter_with_proxy(proxy):
     proxy.set_counter(0)
-    proxy.increase(10)
-    proxy.decrease(8)
-    proxy.increase(5)
+    proxy.inc(10)
+    proxy.dec(8)
+    proxy.inc(5)
     value = proxy.get_counter().get()
     assert value == 7
 
@@ -66,7 +66,7 @@ def test_multiprocess_with_proxy(proxy):
     proxy.set_counter(0)
 
     def increment():
-        proxy.increase(1)
+        proxy.inc(1)
 
     threads = []
     for i in range(0,10):

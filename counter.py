@@ -2,30 +2,30 @@ import pykka
 
 
 class Counter(pykka.ThreadingActor):
-    counter = 0
+    amount = 0
 
     def on_receive(self, message):
         if message['method'] == 'get_counter':
-            return self.counter
-        elif message['method'] == 'increase':
-            self.counter += message['amount']
-        elif message['method'] == 'decrease':
-            self.counter -= message['amount']
+            return self.amount
+        elif message['method'] == 'inc':
+            self.amount += message['n']
+        elif message['method'] == 'dec':
+            self.amount -= message['n']
         elif message['method'] == 'set_counter':
-            self.counter = message['amount']
+            self.amount = message['n']
 
 
 class Counter2(pykka.ThreadingActor):
-    counter = 0
+    amount = 0
 
-    def increase(self, amount):
-        self.counter += amount
+    def inc(self, n):
+        self.amount += n
 
-    def decrease(self, amount):
-        self.counter -= amount
+    def dec(self, n):
+        self.amount -= n
 
     def get_counter(self):
-        return self.counter
+        return self.amount
 
-    def set_counter(self, amount):
-        self.counter=amount
+    def set_counter(self, n):
+        self.amount=n
